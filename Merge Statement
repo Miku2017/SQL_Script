@@ -1,0 +1,22 @@
+
+--Source Table
+
+Create table dbo.Employee_Src 
+(
+ EmpCode Int Primary Key,
+ EmpFullName Varchar(100),
+ Gender      Char(1),
+ Location    Varchar(100)
+);
+--Target Table
+
+Create table dbo.Employee_Trg
+(
+ Empkey      Int Primary Key,
+ EmpCode     Int ,
+ EmpFullName Varchar(100),
+ Gender     Char(1),
+ Location    Varchar(100),
+ StartDate   Date,
+ EndDate     Date
+);
