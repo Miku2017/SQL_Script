@@ -1,4 +1,4 @@
-
+ ---Merge statement helps to Insert new recored and update existing recored if there is a change in source.
 --Source Table
 
 Create table dbo.Employee_Src 
