@@ -26,4 +26,6 @@ Insert into dbo.Employee_Src (Empcode,Fullname,Gender,Location)
 Values (1001,'Robert Williams','M','Colorado'),
        (1002,'Hanna Joshep','F','Washington')
 
+-- Check records in source table
+Select * from dbo.Employee_Src
        
