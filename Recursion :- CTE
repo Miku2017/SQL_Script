@@ -1,0 +1,12 @@
+
+;With DAYS_2021
+AS
+  (
+     Select cast('20210101' as Date) as Startdate
+	 Union All
+	 Select DATEadd(DAY,1,Startdate) 
+	 From DAYS_2021
+	 WHERE Startdate < '20211231'
+  )
+  Select * from DAYS_2021
+  Option (Maxrecursion 365)
