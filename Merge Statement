@@ -2,31 +2,88 @@
  -- 
 --Source Table :- Stage table 
 
-Create table dbo.Employee_Src 
-(
- EmpCode Int Primary Key,
- FullName Varchar(100),
- Gender      Char(1),
- Location    Varchar(100)
-);
---Target Table
 
-Create table dbo.Employee_Trg
-(
- Empkey      Int Primary Key,
- EmpCode     Int ,
- FullName Varchar(100),
- Gender     Char(1),
- Location    Varchar(100),
- StartDate   Date,
- EndDate     Date
-);
+	Drop table if exists dbo.DimCustomer
+	Create table dbo.Src_customer
+	 (
+	   CustCode  int,
+	   CustName varchar(10),
+	   Email    nvarchar(25),
+	   Phone    nvarchar(15)
+	)
+  INSERT  Into  Src_customer (CustCode,CustName,Email,Phone)
+  Values (1010,'William','William1010_1@amc.com','720-525-6273'),
+         (1212,'Samantha','Samantha1212_1@amc.com','303-421-8232');
+	
+	Drop table if exists dbo.DimCustomer
+	Create  table dbo.DimCustomer 
+	(
+	  CustId int     Identity(1,1),
+	  CustCode       Int,
+	  CustName       Varchar(10),
+	  Email          Nvarchar(25),
+	  Phone          Nvarchar(15),
+	  Created_Date   Datetime2 default Getdate(),
+	  Created_By     Varchar(100) default system_user,
+	  Modified_Date  Datetime2,
+	  Modified_By    Varchar(100),
+	);
+	Go
+Create Proc dbo.PCustomerInsert_Update
+ AS 
+ SET NOCOUNT ON ;
+	Insert into dbo.DimCustomer (Custcode,CustName,Email,Phone,Modified_Date,Modified_By)
+	Select  CustCode,CustName,Email,Phone,Md,Mb  From  
+	  (
+	      Merge into  dbo.DimCustomer T
+		  Using 
+		    (
+			  Select CustCode,CustName,Email,Phone from dbo.Src_customer
+			  Except
+			  Select CustCode,CustName,Email,Phone from dbo.DimCustomer
+			)as S On (S.CustCode=T.CustCode)
+		When Not matched  THEN 
+		INSERT (custcode,CustName,Email,Phone)
+		Values (S.CustCode,S.CustName,S.Email,S.Phone)
 
--- Insert records
-Insert into dbo.Employee_Src (Empcode,Fullname,Gender,Location)
-Values (1001,'Robert Williams','M','Colorado'),
-       (1002,'Hanna Joshep','F','Washington')
+		When Matched and  Modified_Date is null  and Modified_by is null Then 
+		Update 
+		Set Modified_Date=Getdate(), 
+		    Modified_by=System_user
+		   
+		Output $Action as Act, S.CustCode,S.CustName,S.Email,S.Phone,Null as Md, Null as Mb
 
--- Check records in source table
-Select * from dbo.Employee_Src
-       
+	  ) AS M
+	  Where M.ACT='Update';
+
+
+Exec PCustomerInsert_Update;
+Select * from Src_customer;
+Select * from Dimcustomer;
+Go
+ 
+ -- When we insert or update record on source table automatically the trigger fire and make change on target table
+ Create or alter trigger dbo.CustInser_Update
+ On dbo.Src_customer
+ After Insert,Update
+ AS
+	Exec PCustomerInsert_Update;
+
+-- 1
+Delete from Src_customer
+-- 2 
+ INSERT  Into  Src_customer (CustCode,CustName,Email,Phone)
+ Values (1330,'Martha','Martha1330_1@amc.com','720-525-7693');
+ GO
+
+ INSERT  Into  Src_customer (CustCode,CustName,Email,Phone)
+ Values (1350,'Tedd','Tedd1350_1@amc.com','720-585-7933');
+ GO
+
+ Update Src_customer
+ Set Email='Tedd1350_2@amc.com' Where CustCode=1350;
+ Go
+ 	
+ INSERT  Into  Src_customer (CustCode,CustName,Email,Phone)
+ Values (1652,'John','John1652@amc.com','720-442-2341');
+ GO
