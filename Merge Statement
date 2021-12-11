@@ -1,5 +1,6 @@
  --Merge statement helps to Insert new recored and update existing recored if there is a change in source.
---Source Table
+ -- 
+--Source Table :- Stage table 
 
 Create table dbo.Employee_Src 
 (
