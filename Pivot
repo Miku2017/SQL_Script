@@ -1,0 +1,25 @@
+
+-- Pivot  Table with Dynamic SQL to generate Column lists
+
+   Declare @Columns nvarchar(Max),@Sql nvarchar(Max)
+   Select @Columns= coalesce(@Columns+',','')+ Quotename(catagory) From
+        (
+         Select  Distinct Catagory
+           From sdata
+        ) Tb1
+        --Print @Columns
+  
+  Select @Sql='
+  Select Month_Num as N,'+@Columns+'
+  From 
+
+        (  Select Month(Orderdate) as Month_Num,
+                  catagory,
+                  SalesAmount
+           From sdata
+        ) as T1 
+  Pivot
+        (
+           SUM(SalesAmount) For [catagory] in ('+@Columns+')
+        ) as P1
+        Order by 1'
