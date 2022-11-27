@@ -1,0 +1,22 @@
+-- DATE Table 
+
+Declare @StartDate Date ='1/1/2020', @Enddate Date='12/31/2020'
+;With Cte_Datetable
+AS 
+  (
+     Select @StartDate as StartDate
+	 Union All
+	 Select dateadd(dd,1,startdate) from cte_Datetable
+	 Where StartDate < @Enddate
+  )
+
+Select StartDate,
+       YearDate=Year(StartDate),MonthOfYear=Month(StartDate),
+	   QuarterOfYear=Convert(char,DatePart(QQ,StartDate)),
+	   Month_Name=Format(StartDate,'MMMM'),
+	   WeekOfYear=DatePart(WEEK,StartDate),
+	   [DayOfWeek]=DatePart(WEEKDAY,StartDate),
+	   [DayOfMonth]=Day(StartDate),
+	   [DayName]=FORMAT(StartDate,'dddd')	    
+	   from Cte_Datetable  
+OPTION (maxrecursion 0);
