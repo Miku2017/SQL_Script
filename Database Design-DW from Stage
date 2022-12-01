@@ -1,0 +1,141 @@
+Select * from AdventureDW.dbo.Sdata;
+-- Select * into dbo.Sales from AdventureDW.dbo.Sdata;
+Select *  from Sales;
+
+   Create table dbo.D_Date
+    (
+	   DateKey int identity ,
+	   FullDate Date,
+	   CalanderYear int,
+	   CalanderQuarter int,
+	   CalanderMonth int,
+	   [MonthName] varchar(10),
+	   [WeekofYear] int,
+	   [DayOFMonth] int,
+	   [DayOfWeek] int,
+	   [DateName] varchar(10)
+   ); -- Select * from dbo.D_DATE
+
+   Create table dbo.D_Country
+   (
+     CountryKey int identity Primary Key,
+	 Country   varchar(50)
+   ) -- Select * from dbo.D_Country
+
+   Create table dbo.D_Catagory
+   (
+	CatagoryKey int identity Primary Key,
+	Catagory  nvarchar(50)
+   )  -- Select * from dbo.D_Catagory
+
+   Create table dbo.D_SubCatagory
+   (
+	SubCatagoryKey int identity Primary Key,
+	SubCatagory nvarchar(50),
+	CatagoryKey int
+   ) --Select * from dbo.D_SubCatagory
+
+   
+  Create table dbo.D_Product
+   (
+	ProductKey int identity Primary Key,
+	Product nvarchar(50),
+	SubCatagoryKey int,
+   ) -- Select * from dbo.D_Product 
+   Truncate table D_Product
+
+
+   Create table dbo.F_Sales
+    (
+       Id int ,
+	   OrderId nvarchar(100) ,
+	   DateKey int,
+	   CountryKey Smallint,
+	   ProductKey Smallint,
+	   Quantity  int,
+	   unitprice money,
+	   SalesAmount Money
+	) ;-- Select * from dbo.F_Sales
+
+Set statistics time,io on; 
+-- Date Table
+Declare @Mindate  Date , @MaxDate Date
+Select @Mindate= DATEFROMPARTS(Year(Min(orderdate)),1,1) from dbo.Sales
+Select @MaxDate=DATEFROMPARTS(YEAR(Max(Orderdate)),12,31) from dbo.sales
+
+   ;With Cte_Date
+   AS
+     (
+	   Select @Mindate as Startdate 
+	   Union all
+	   Select DATEADD(DD,1,Startdate) from Cte_Date 
+	   Where Startdate < @MaxDate
+	 )
+
+	 Insert into dbo.D_Date(FullDate,CalanderYear,CalanderQuarter,CalanderMonth,
+	            [MonthName],[WeekofYear],[DayOFMonth],[DayOfWeek],[DateName]) 
+	 Select Startdate,
+	        [Year]=Year(Startdate),
+	        QuarterOfYear=DATEPART(QQ,Startdate),
+	        MonthOfYear=Month(Startdate),
+			Month_Name=Format(Startdate,'MMMM'),
+			WeekOfYear=DATEPART(WEEK,Startdate),
+			[DayOFMonth]=Day(Startdate),
+			[DayOfWeek]=Datepart(DW,Startdate),
+			[DateName]=FORMAT(Startdate,'dddd')
+					   		
+			from cte_Date
+	 Option (Maxrecursion 0);
+
+-- Country Table
+	 Insert into  dbo.D_Country (Country)
+	   Select Distinct Country
+	   From dbo.Sales Where country not in 
+	       (  
+		      Select Country from dbo.D_Country
+		   );
+-- Catagory Table
+      Insert into  dbo.D_Catagory (Catagory)
+	   Select Distinct Catagory
+	   From dbo.Sales Where Catagory not in 
+	       (  
+		      Select Catagory from dbo.D_Catagory
+		   );
+
+-- SubCatagory Table
+	   Insert into  dbo.D_SubCatagory (SubCatagory,CatagoryKey)
+	   Select  Distinct SubCatagory,c.CatagoryKey 
+	   From dbo.Sales  as sc
+			Inner Join dbo.D_Catagory as c 
+			 On Sc.Catagory=C.Catagory 
+	   Where Sc.SubCatagory not in 
+	       (  
+		      Select Subcatagory from dbo.D_SUbCatagory
+		   ) Order by sc.SubCatagory;
+ 
+ --Product table
+   Insert into dbo.D_Product (Product,SubCatagoryKey)
+	Select Distinct S.Product,Sc.SubCatagoryKey
+	from dbo.Sales as S Inner Join dbo.D_SubCatagory as Sc
+	On S.SubCatagory=Sc.SubCatagory
+	   Where S.Product not in 
+	    (
+		   Select Product from dbo.D_Product
+		);
+
+
+-- Fact Table 
+
+    Insert into  dbo.F_Sales (OrderId,DateKey,CountryKey,ProductKey,Quantity,unitprice,SalesAmount)
+     Select S.OrderId,D.DateKey,C.CountryKey,P.ProductKey,
+	        S.Quantity,S.UnitPrice,S.SalesAmount
+	 From dbo.Sales AS s 
+	    Inner Join dbo.D_Date as D ON S.Orderdate=D.FullDate
+		Inner Join dbo.D_Country as C ON S.Country=C.Country
+		Inner Join dbo.D_Product as P ON S.Product=P.Product
+		Where S.OrderId not in
+		   (
+                Select Orderid from dbo.F_Sales
+		   );
+
+	
