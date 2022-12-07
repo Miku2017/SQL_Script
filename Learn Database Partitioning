@@ -1,0 +1,24 @@
+# Database partitioning is a technique where you split up a huge table into multiple tables and let the database decide which table
+  or which partition to hit based on the where clause.
+
+# partitioning :- helps to to avoid querying huge amount of data and work with smaller set of data.
+
+# using an index or full table scanning 100 million row is a lot,that's going to slow things down.
+   Index large tables are always slow to query regardless.So what do we do? Partitioning is the idea here is
+   break the table down to smaller pieces so we know we only work with so many rolls and instead of a larger set of rules.
+
+ # The quickest way to query a table with a billion rows is to avoid querying a table with a billion rows with the help of Partitioning.
+
+Vertical and Horizontal Partitioning 
+
+Horizontal Partitioning :-  Split table based on rows [Using list or range]
+Vertical Partitioning :- Split table based on column. Ex. Large column (Blob)
+
+
+Partitioning type
+  1. Range :- Date ,Id 
+  2. List  :- based on value Ex. By Country,State,Zipcode,Catagory
+  
+  
+  https://www.sqlshack.com/database-table-partitioning-sql-server/
+  
