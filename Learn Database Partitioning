@@ -57,3 +57,82 @@ INNER JOIN sys.columns AS c ON pstats.object_id = c.object_id AND ic.column_id =
 LEFT JOIN sys.partition_range_values AS prv ON pf.function_id = prv.function_id AND pstats.partition_number = (CASE pf.boundary_value_on_right WHEN 0 THEN prv.boundary_id ELSE (prv.boundary_id+1) END)
 WHERE pstats.object_id = OBJECT_ID('Sales')
 ORDER BY TableName, PartitionNumber;
+
+
+
+partion documentation.docx
+Table Partitioning 
+===================== 4413080
+
+Secnario : when you have large table its difficult to manage 
+a table which is > 50Gb and >100Gb it called as large table,
+this time its difficult to take backup ,index maintenace,
+update statistics ,sql queries get slow , load & unload the data( create lock,block)
+
+But in small table up to 1 Gb not have the above problem 
+
+
+Facttable : contain 
+    Pk  clustered index (Occupy 600 GB)
+    NCI(8)    (Occupy  400GB)
+    
+
+Partition data 
+   specify file group 
+
+Secnaroies 1   Query
+
+  you have Fact table for 20 years (1TB) , 5 Billions rows
+Ex.    select * from facttansctio where year between 2013 and 2015    
+       the above query returns 200Million rows , here the case is 
+       you want to get only 2 years range salestransaction( 200 millon rows) but
+       the query scan the entire clustered index which is 5 Billions rows.(Bad Performance)
+
+Secnaroies 2  taking Backup
+      you have Fact table for 20 years (1TB) , 5 Billions rows
+      Let you want to Full back up 
+   you have backup plan 
+       1. Fullback once a week  and 
+       2. Differential backup every day 
+  
+Fullback up may take over 10 hours So To saving backu up time.How ?
+       
+    partitioning table (into state and frequently change data) and take file group back up
+    So you dont need to take full back every week for state data (less modification/changing data)
+    and put this file group only in read only mode.
+    Onyl take back up every week more frequently changing data(may take only 2 years data).
+
+Secnaroies 2  Index Maintenace
+    let you have 800GB Cluctered Primary key, 
+     
+    let you have 10GB  Cluctered Primary key and when you do defrag (Rebuild)
+     it requuires additional space(10 GB) inside file (it will create another defragmented 10 Gb
+     finally it will do partition swich(cause for locking).
+
+    performing index maitenace on large table takes more time & space and acuire locking (rebuild the entire index)
+    Instead only update recent table.
+  
+    Note :- IF you dont perform index maintenance query generate and Execute bad plan
+     
+        you may think that you are updating recent index 
+        but you are  still rebuilding the entire index 
+
+Secnaroies 2  Loading and Uploading data
+ 
+   let you want to insert data into Fact table from staging (source)
+     How long does it take (Eg. 5 million rows daily)
+   
+   Ex : facttransaction table (has record from 2000-2020), 5 billion rows 
+    
+     the query look
+   Ex : facttransaction table (has record from 2000-2020), 5 billion rows 
+    
+     narrowing down 
+page split 
+    
+   
+   
+
+
+
+
