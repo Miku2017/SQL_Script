@@ -137,4 +137,78 @@ page split
 
 
 
+/*
+	 Use AdventureDW;
+	 Drop Database  If Exists LearnPartitioning;
+	 Create Database LearnPartitioning;
+	 Use LearnPartitioning;
+
+	 */
+
+	    
+  Select * FROM sys.filegroups
+  Select * FROM sys.database_files
+	Alter Database LearnPartitioning
+	Add FileGroup FG2010;
+
+	Alter Database LearnPartitioning
+	Add FileGroup FG2011;
+
+	Alter Database LearnPartitioning
+	Add FileGroup FG2012;
+
+	Alter Database LearnPartitioning
+	Add FileGroup FG2013;
+
+
+	-- Add Files
+
+
+	-- Create partition function 
+
+	Create partition function pf_date (date)
+	As range right for values ('2011/1/1','2012/1/1','2013/1/1');
+
+	Create partition scheme ps_date 
+	As partition pf_date to ([FG2010],[FG2011],[FG2012],[FG2013])
+
+
+	  
+	  Select Distinct SalesOrderNumber,OrderDateKey,ProductKey from AdventureDW.dbo.FactResellerSales
+     	  Select * from AdventureDW.dbo.FactResellerSales
+     	  Select SalesOrderNumber,OrderDate,EmployeeKey from AdventureDW.dbo.FactResellerSales
+
+     	  
+
+	  Create  -- Drop 
+	  table dbo.Sales
+	     (
+		   Id int identity,
+		   SalesOrderNumber nvarchar(10) not null,
+		   Orderdate date not null,
+		   ProductKey int not null,
+		   EmployeeKey int,
+		   OrderQuantity int,
+		   UnitPrice Money,
+		   TotalSales as OrderQuantity * UnitPrice,
+		    Constraint Pk_Sales_Composite Primary Key 
+			   (
+			    id,Orderdate asc
+			   ) on ps_date (orderdate));
+
+	Insert into  dbo.Sales (SalesOrderNumber,OrderDate,ProductKey,EmployeeKey,OrderQuantity,UnitPrice)
+	Select  SalesOrderNumber,OrderDate,ProductKey,EmployeeKey,OrderQuantity,UnitPrice 
+	  from AdventureDW.dbo.FactResellerSales;
+
+
+
+	  SELECT 
+p.partition_number AS PartitionNumber,
+f.name AS PartitionFilegroup, 
+p.rows AS NumberOfRows 
+FROM sys.partitions p
+JOIN sys.destination_data_spaces dds ON p.partition_number = dds.destination_id
+JOIN sys.filegroups f ON dds.data_space_id = f.data_space_id
+WHERE OBJECT_NAME(OBJECT_ID) = 'sales'
+
 
