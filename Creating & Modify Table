@@ -1,0 +1,107 @@
+
+/*
+Create table 
+	- Schema_Name (dbo, named)
+	- Table_Name
+	- Column_Name
+	     - Computed column 
+	- Datatype (Number,decimal,currency,date,text)
+	- Constraint (Primary Key ,Foreign Key , Unique ,Not Null, check , default)
+	- View table definition
+	*/
+	    -- Modify Table name
+	    -- Modify Column name
+	    -- Add Not Null Constraint
+	    -- Add primary Key constraint
+		-- Add Default Constraint
+		-- Modify Coilumn Data Type
+		-- Add Column 
+		
+		Create Schema Sales;
+		  Create table Sales.SalesPerson (PersonId smallint ,First_Name varchar(50));
+		  Select * from Sales.SalesPerson ;
+
+		  -- Drop table Sales.SalesPerson ;  Drop schema Sales;
+			  
+	 Create -- Drop
+	      table dbo.Store  
+	     (Store_Id int ,
+		  Store_Name varchar(50)
+		   );	
+		       /*
+		   Exec Sp_rename 'dbo.Store', 'tbl_Store' -- change table name 
+		   Exec Sp_rename 'dbo.Store.Store_Id', 'Store_Code' -- change column name
+			   */
+
+		   Select * from dbo.Store;
+		   Select * from dbo.tbl_Store     -- Drop table dbo.Store
+
+	--****************************************************************************--
+	
+		   Alter table dbo.Store
+		   Alter column Store_Id  Smallint Not Null; -- Modifiy column (modify datatype,not null)
+		   
+		   Alter table dbo.Store 
+		   Add constraint Pk_Store_Id2 Primary Key (Store_Id); -- Add  Primary Key constraint
+
+		   Alter table dbo.Store
+		   Add Country_code varchar(10) ; -- Add New Column
+
+		   Alter table dbo.Store 
+		   Add  constraint Df_Store_Country_code default 'USA' for Country_code ; -- Add default constraint
+
+		   Alter table dbo.Store
+		   Add Constraint Check_Store_Store_Name check (Store_name in ('store-A','Store-B')); -- Add check Constraint
+
+		   Exec Sp_rename 'dbo.Store', 'tbl_Store' -- change table name 
+		   Exec Sp_rename 'dbo.Store.Store_Id', 'Store_Code' -- change column name
+
+		      Select * from dbo.tbl_Store
+			  -- Drop table  dbo.tbl_Store
+		
+		   --  Sp_help 'dbo.store';
+		   Insert into  dbo.Store (Store_id,Store_name) 
+		   values (1,'Store-A');		  
+
+		   Insert into  dbo.Store (Store_id,Store_name,Country_code) 
+		   values (2,'Store-A','Uk');
+		   		   
+		   Insert into  dbo.Store (Store_id,Store_name,Country_code) 
+		   values (3,'Store-A',default);
+
+		   Insert into  dbo.Store (Store_id,Store_name,Country_code) 
+		   Values (4,'Store-c',default);
+
+		    -- Select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_NAME like 'Pk_%' and table_name='tbl_Store'
+
+	     -- Select * from Store;
+	 Create -- Drop 
+	       table dbo.Sales 
+		 (
+		    Id int identity Not Null , -- Not Null & Unique
+			Order_Number nvarchar(100) Not Null,
+			Order_Date   Datetime  check (Year(Order_Date)=2021), -- Check 
+			Store_ID     Smallint , -- Foreign key
+			SalesPerson_Id Smallint,
+			Customer_ID   Smallint,
+			Quantity      int,
+			Unit_Price    Numeric (6,2),
+			Total_Sales  as (Quantity * Unit_Price), -- Computed Column 
+			    Constraint Uq_Sales_Id Unique (Id),
+				constraint Pk_Sales_Id Primary Key (ID),
+				constraint FK_Sales_Store_Id Foreign Key (Store_ID) references Store (Store_ID)
+		 );  
+
+     Insert into  dbo.Sales  (Order_Number,Order_Date,Store_ID,SalesPerson_Id,Customer_ID,Quantity,Unit_Price)
+	 Values ('S10201','01/01/2021',1,101,205,55,25.75);
+	 
+	 Select * from dbo.sales;
+
+	 Insert into  dbo.Sales  (Order_Number,Order_Date,Store_ID,SalesPerson_Id,Customer_ID,Quantity,Unit_Price)
+	 Values ('S10201','01/01/2022',2,102,235,105,35.25); -- vaiolate check constraint 
+
+	 Insert into  dbo.Sales  (Order_Number,Order_Date,Store_ID,SalesPerson_Id,Customer_ID,Quantity,Unit_Price)
+	 Values ('S10201','01/02/2021',12,102,235,105,35.25); -- vaiolate Foreign Key constraint 
+
+
+
