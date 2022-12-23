@@ -23,3 +23,26 @@
            SUM(SalesAmount) For [catagory] in ('+@Columns+')
         ) as P1
         Order by 1'
+
+-- Ex 2
+
+Declare @Territory nvarchar(max),@Sql nvarchar(max)
+Select @Territory= Isnull(@Territory+',','')+ quotename(Region) 
+	FROM (select   Region=CountryRegionCode +'-'+[Name]
+	        from sales.SalesTerritory  ) as T
+Select @Territory
+Select @Sql=N'
+Select * from 
+	(
+		Select OrderYear=Year(OrderDate),
+	           Region=T.CountryRegionCode +''-''+T.[Name],TotalDue 
+       from sales.SalesOrderHeader as S Inner Join sales.SalesTerritory as T 
+			on  S.TerritoryID=T.TerritoryID 
+	) as T
+Pivot
+  (
+     Sum(Totaldue) for Region in ('+@Territory+')
+  ) as P
+  '
+
+  Exec (@Sql)
