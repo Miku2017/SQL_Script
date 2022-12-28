@@ -1,0 +1,62 @@
+  --****************** String Function ********************
+
+-- charindex
+       Declare @String nvarchar(50) ='Bisrat0104@gmail.com'
+	   Select  CHARINDEX('.com',@string);
+
+	   Declare @String1 nvarchar(50) ='This is Maths'
+	   Select  CHARINDEX('is',@string1);
+
+-- Concat 
+      
+	  Select Fullname= concat(firstname,' ',MiddleName,' ',lastname) from person.Person
+-- Concat_ws :-  separatore, treat nulls 
+	 Select Fullname= concat_ws(' ','Bisrat','Dejene','Gezahgne') from person.Person
+
+--String_Agg
+    Select Department,
+	       FullName=String_Agg(concat_ws(' ',FirstName,LastName),',') from
+	       HumanResources.vEmployeeDepartment
+	Group by Department
+	Order by Department
+   
+    Select Department,
+      JobTitle=STRING_AGG(convert(nvarchar(max),JobTitle),',') 
+	from HumanResources.vEmployeeDepartment
+	Group by Department;
+
+-- Stuff =STUFF ( character_expression , start , length , replaceWith_expression )
+    Declare @Phone varchar(50)='720-645-7090'
+	Select Phone=Stuff(@phone,9,4,'****')
+-- Replace = REPLACE ( string_expression , string_pattern , string_replacement ) 
+      Declare @N varchar(10)='Abc123'
+	  Select Replace(@N,'abc','***')
+    
+-- Replicate= REPLICATE ( string_expression , integer_expression )  
+     Declare @code varchar(100)='23508316'
+	 Select REPLICATE(@code,2)
+  
+-- Substring = SUBSTRING ( expression ,start , length )  
+  	Declare @Email varchar(50)='bisrat0104@gmail.com'
+	Select Email=Substring(@Email,1,6)
+	Select Email=Substring(@Email,Charindex('@',@email)+1,len(@Email))
+  
+-- Trim 
+    Declare @Name varchar(25)='     Bisrat    '
+    Select @name,lTRIM (@name),rtrim(@name),Trim(@name)
+    Select Len(@name),Len(lTRIM (@name)),len(rtrim(@name)),len(Trim(@name))
+
+	SELECT TRIM( '123' FROM '123Bisrat123') AS Result;
+
+-- Upper 
+  Declare @EmpName varchar(50) ='bisrat'
+  Select  EmpName=Upper(@EmpName), 
+          Empname2=Upper(SUBSTRING(@EmpName,1,1))
+		  +SUBSTRING(@EmpName,2,len(@EmpName));
+
+-- ABS = change to postive 
+   Select AbS(-4.5)
+
+-- Reverse
+     Declare @A varchar(25)='bisrat0104@gmail.com'
+     Select Reverse(Left(REVERSE(@A),3))
