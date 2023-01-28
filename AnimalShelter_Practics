@@ -6,3 +6,13 @@
  -- Animals adopted and not vacinated ---> 45
  -- Animals  not addopted but vacinated 
  -- Animals  not adopted and not vacinated
+
+Vaccination
+============
+ ጠቅላላ የተሰጠው የክትባት ብዛት በቁጥር 
+	ከአንድ በላይ ጊዜ የተከተቡ እንስሳት ስንት ናቸው
+	በትንሹ አንድ ጊዜ የተከተቡ ስንት ናቸው
+	አንድ ጊዜ ብቻ የተከተቡ ስንት ናቸው
+
+	Adopt ከተደረጉት ውስጥ ምንም ክትባት ያላገኙ እንስሳት ስንት ናቸው
+	Adopt ከተደረጉት ውስጥ አንድ ወይም ከዛ በላይ ክትባት ያገኙ እንስሳት ስንት ናቸው
