@@ -10,3 +10,38 @@ AS
   )
   Select * from DAYS_2021
   Option (Maxrecursion 365)
+
+
+
+Create view dbo.vHirarchy
+as
+    With cte
+   as
+     (
+	    Select staff_id,first_name,manager_id,1 as [Level] 
+		from sales.staffs where manager_id is null
+		union all
+		
+	    Select a.staff_id,a.first_name,a.manager_id,b.[Level] +1 
+		from sales.staffs as a Join cte as b
+		on a.manager_id=b.staff_id
+	 )
+	 Select [Level]
+	       ,Employeename=cte.first_name
+	       ,Report_to=c.first_name
+		   
+		   from cte left join sales.staffs as c 
+	 On cte.manager_id=c.staff_id
+
+   /*
+
+     
+	 Select Manager,VALUE as Employee
+	 From 
+	 (
+	 Select Manager=Report_to,
+	        Employee=STRING_AGG(Employeename,',')
+	 from dbo.vHirarchy
+	 Group by Report_to
+	 ) as T cross apply
+	 string_split(Employee,',')
