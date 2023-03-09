@@ -1,0 +1,119 @@
+1. Its 3 Am and the production is down. What do you Do ?
+       the databases/DW not responding ? What is the first thing you do ?
+  What is  route cause Analiysis ?
+  what is the right Solution you used for troublshoot ?
+  What is your Monitoring tool ?
+   
+   *** Sp_Who
+   *** RDP
+   *** (a good opportunity Run book) T SQL...(write runbook)
+   *** It could be Network Issue
+>> the objective of this question is how poeple thinks to solve the problem 
+
+2. How would you fell if we asked you to work for a different RDBMS for a 2 month project ?
+Wrong Answer
+   I feel good to work 
+Best Answer 
+  -  What is the vendor support on the different RDMS ? need time to fast track Skill on it
+   - Ask clarification about what the team is like , waht the goals are
+      what is the problem we are trying to solve ? ..> this hepls to wach your experities skill and tools
+   After that say i would love to join your team
+
+3. Explain the Difference between View and Stored Procedure ?
+
+  I used stored procedure ... (Dml OPeration)
+
+  ** A Viwes is Usually Someting you select data from , SP is usually 
+    something ou run to do Different action but it can also return data
+     (SP: helps to modify , Views helps to select data)  
+** Sp: can have Multiple Statements but Views have Single statments
+  
+4. Tell me something about database that I dont aleady know ?
+   (Tell me something about database that facinates you ?)
+
+5. Where do you go looking for answers whne you are not sure how to solve problems ?
+ the objective of this question is to know wether you are or not immediatly ask DBA  
+    (Solving problem Skills, improving Skills) 
+ ** stack overflow 
+ ** Check Documentation /Source Code
+ ** sqlhelp
+ ** Slack , Google
+   
+
+6. Out of the stuff on your resume ,what are you proudest Of?
+ ( I Did this)
+ Best Answer: 
+   I did pick an example of a team i was proud of working with 
+
+7. Who are you favorite database Author? 
+   sqlperformace.com
+   Sqlauthority.com
+8. What was your Biggest Mistake ?
+
+  ** Not conforming if a backup was Successfully made before an update
+  ** Leaving DB Growth size to small Amount like 64 MB
+  ** Forget Where Statement
+
+9. How do you feel about Documentation ?
+  (What do you look for in good Documnetation?)
+  I fell good about Documentation, and its a Key to prevent knowledge loss
+
+  ** Writing Documentation is a great way to validate the information you know about 
+     the system or build you are writing about.
+ 
+10 . What is database filler ?
+
+11. What is your approcach to error handling ?
+  best anwer  ** Try catch & commit and rollback ...Explain ( wirte your code with Error handling)
+     a person who write a code with error handling , Has big respect 
+
+
+12. Whats the latest Version you have used in production or Dev?
+  ( The objectve of the questions is to know current knolwedge with cureent technology )
+		
+    *** 2017, SQL SERVER 
+13. Out of the new versions,what feature are you looking forward to trying ?
+
+   ** Query Store 
+   ** SQL Server BDC
+
+14. If we need to migrate a database with low downtime, What are options?
+  ** Replication
+  ** Log Shipping
+
+15. Tell me about a time you really struggled to collaborate with a coworker and how you handeled it ?
+   ** Direct Conversation With
+   ** My coworker needs me to explain how to do the same thing
+      over and over again , I Showed him to do it ,Wirte some personal documentation and give him
+
+16. What aspect of databases are you trying to learn?
+ ** Becomme better tunning 
+ ** Finding/learning Best Practices 
+ ** Learning some Programming ,phyton
+ ** Automate more with Powershell
+
+17 . What about you ? what was the worst intervew question
+    you ever got ?
+
+
+what is currently harder for you than it should be ?
+Tablespaces in sqlserver,  File group
+waht is Database filler
+open source 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
